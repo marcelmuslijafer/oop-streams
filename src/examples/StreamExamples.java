@@ -4,6 +4,9 @@ import examples.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class StreamExamples {
@@ -22,7 +25,7 @@ public class StreamExamples {
         // Example 2: map(Function<T, R> mapper) - Get a list of student IDs
         System.out.println("Example 2: Get a list of student IDs");
         List<String> studentIDs = students.stream()
-                                          .map(Student::getStudentID)
+                                          .map(student -> student.getStudentID())
                                           .collect(Collectors.toList());
         System.out.println(studentIDs);
         System.out.println("\n");
@@ -30,7 +33,7 @@ public class StreamExamples {
         // Example 3: sorted(Comparator<T> comparator) - Sort students by last name
         System.out.println("Example 3: Sort students by last name");
         List<Student> sortedStudents = students.stream()
-                                               .sorted(Student.BY_LAST_NAME)
+                                               .sorted(Student.BY_LAST_NAME.reversed())
                                                .collect(Collectors.toList());
         System.out.println(sortedStudents);
         System.out.println("\n");
@@ -69,7 +72,7 @@ public class StreamExamples {
         // Example 8: collect(Collector<T, A, R> collector) - Join student names into a single string
         System.out.println("Example 8: Join student names into a single string");
         String studentNames = students.stream()
-                                      .map(Student::getFirstName)
+                                      .map(student -> student.getFirstName())
                                       .collect(Collectors.joining(", "));
         System.out.println(studentNames);
         System.out.println("\n");
@@ -77,8 +80,8 @@ public class StreamExamples {
         // Example 9: reduce(T identity, BinaryOperator<T> accumulator) - Calculate the total points of students
         System.out.println("Example 9: Calculate the total points of students");
         int totalPoints = students.stream()
-                                  .map(Student::getPoints)
-                                  .reduce(0, Integer::sum);
+                                  .map(student -> student.getPoints())
+                                  .reduce(0, (num1, num2) -> num1 + num2);
         System.out.println("Total points: " + totalPoints);
         System.out.println("\n");
 
@@ -120,7 +123,8 @@ public class StreamExamples {
         // Example 15: count() - Count the number of students
         System.out.println("Example 15: Count the number of students");
         long count = students.stream()
-                             .count();
+                .filter(student -> student.getLastName().length() > 4)
+                .count();
         System.out.println("Number of students: " + count);
         System.out.println("\n");
 
@@ -134,7 +138,7 @@ public class StreamExamples {
         // Example 17: max(Comparator<T> comparator) - Get the student with the maximum points
         System.out.println("Example 17: Get the student with the maximum points");
         Optional<Student> maxStudent = students.stream()
-                                               .max(Student.BY_POINTS);
+                                               .max(Student.BY_POINTS.thenComparing(Student.BY_FIRST_NAME));
         System.out.println(maxStudent.orElse(null));
         System.out.println("\n");
 
@@ -143,5 +147,15 @@ public class StreamExamples {
         Student[] studentArray = students.stream()
                                          .toArray(Student[]::new);
         System.out.println(Arrays.toString(studentArray));
+        System.out.println("\n");
+
+        // Example 10: mapToInt() - Get average points
+        System.out.println("Example 19: Get average points");
+        double average = students.stream()
+                .mapToInt(student -> student.getPoints())
+                .average()
+                .getAsDouble();
+        System.out.println(average);
+
     }
 }
