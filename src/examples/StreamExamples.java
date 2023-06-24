@@ -3,6 +3,7 @@ package examples;
 import examples.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -156,6 +157,26 @@ public class StreamExamples {
                 .average()
                 .getAsDouble();
         System.out.println(average);
+        System.out.println("\n");
 
+        // Example 20: groupingBy() - Get a map that stores name lengths as keys,
+        // and a number of students with a certain name length as values
+        // e.g. 6 -> 3 if there are 3 students with names of length 3
+        System.out.println("Example 20: Get name length counts");
+        Map<Integer, Long> nameLengthCounts = students.stream()
+                .collect(Collectors.groupingBy(student -> student.getFirstName().length(), Collectors.counting()));
+        System.out.println(nameLengthCounts);
+        System.out.println("\n");
+
+        // Example 21: groupingBy() - Get a map that contains counts of students that belong to a certain point range
+        // For example if the point range is 30:
+        // 0 -> 5 means that there are 5 students that have between 0 and 30 points
+        // 30 -> 3 means that there are 3 students that have between 30 and 60 points, and so on
+        System.out.println("Example 21: Group by points");
+        int range = 30;
+        Map<Integer, Long> histogram = students.stream()
+                .collect(Collectors.groupingBy(student -> (student.getPoints() / range) * range, Collectors.counting()));
+
+        System.out.println(histogram);
     }
 }
