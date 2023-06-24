@@ -149,7 +149,7 @@ public class StreamExamples {
         System.out.println(Arrays.toString(studentArray));
         System.out.println("\n");
 
-        // Example 10: mapToInt() - Get average points
+        // Example 19: mapToInt() - Get average points
         System.out.println("Example 19: Get average points");
         double average = students.stream()
                 .mapToInt(student -> student.getPoints())
